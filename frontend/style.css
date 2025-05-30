@@ -11,11 +11,11 @@ body {
 }
 
 html {
-    background-color: slategray;
+    background-color: #CADCFC;
 }
 
 .navbar {
-    background-color: lightgrey;
+    background-color: #00246B;
 
     margin: 0, 0;
     width: 100%;
@@ -32,9 +32,9 @@ html {
 
 .navbar button {
     all: unset;
-
-    background: lightblue;
-    padding: 5px;
+		color: white;
+/*    background: lightblue;*/
+    padding: 5px;		
     border-bottom: solid 4px;
 }
 
