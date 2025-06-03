@@ -11,11 +11,12 @@ body {
 }
 
 html {
-    background-color: #cadcfc;
+    /*background-color: #cadcfc;*/
+    background-color: white;
 }
 
 .navbar {
-    background-color: #00246b;
+    background-color: #415D43;
 
     margin: 0, 0;
     width: 100%;
