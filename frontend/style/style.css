@@ -44,6 +44,6 @@ html {
 }
 
 .navbar a.selected {
-    color: black;
+    color: white;
     border-color: black;
 }

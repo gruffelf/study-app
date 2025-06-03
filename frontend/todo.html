@@ -19,7 +19,33 @@
             <span>English</span>
             <span>Science</span>
             <span>Maths</span>
+            <span class="add-subject">+ Add Subject</span>
         </div>
-        <script src="app.js"></script>
+
+        <div class="tasks">
+            <div class="study-tasks">
+                <span>Studying Tasks</span>
+                <div class="task">- Study</div>
+                <div class="task">- Revise</div>
+                <div class="task add-task" onclick="openTask()">+ Add Task</div>
+            </div>
+            <div class="assess-tasks">
+                <span>Assessment Tasks</span>
+                <div class="task">- Assessment Task 1</div>
+                <div class="task">- Important Essay</div>
+                <div class="task add-task" onclick="openTask()">+ Add Task</div>
+            </div>
+        </div>
+
+        <div id="dim-overlay"></div>
+
+        <div id="task-entry">
+            Task Name
+            <input type="text" id="task-name" placeholder="Enter Task Here"/>
+            <button onclick="saveTask()">Enter</button>
+        </div>
+
+        <script src="scripts/app.js"></script>
+        <script src="scripts/todo.js"></script>
     </body>
 </html>
