@@ -11,11 +11,11 @@ body {
 }
 
 html {
-    background-color: #CADCFC;
+    background-color: #cadcfc;
 }
 
 .navbar {
-    background-color: #00246B;
+    background-color: #00246b;
 
     margin: 0, 0;
     width: 100%;
@@ -30,14 +30,20 @@ html {
     width: 20%;
 }
 
-.navbar button {
+.navbar a {
     all: unset;
-		color: white;
-/*    background: lightblue;*/
-    padding: 5px;		
+    color: white;
+    /*    background: lightblue;*/
+    padding: 5px;
     border-bottom: solid 4px;
+    cursor: pointer;
 }
 
-.navbar button:hover {
+.navbar a:hover {
     background: grey;
+}
+
+.navbar a.selected {
+    color: black;
+    border-color: black;
 }

@@ -1,0 +1,12 @@
+.subjects {
+    background-color: white;
+
+    padding: 5px;
+
+    display: flex;
+    justify-content: flex-start; /*align to left */
+}
+
+.subjects span {
+    margin-right: 5%;
+}
