@@ -54,6 +54,20 @@
     margin-right: 8%;
     border-radius: 15px;
     padding-left: 3%;
+    padding-right: 3%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.task i {
+    color: gray;
+    cursor: pointer;
+}
+
+.task-checkbox {
+    cursor: pointer;
 }
 
 .add-task {

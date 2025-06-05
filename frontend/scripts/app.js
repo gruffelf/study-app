@@ -5,26 +5,32 @@ const api_url = dev_url;
 
 async function get(i) {
   const url = api_url + i;
-  const response = await fetch(url);
-  const data = await response.json();
-  return data;
-}
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
 
-async function post(i, data) {
-  const url = api_url + i;
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/plain", // Critical for plain strings
-    },
-    body: [data],
-  });
-  const result = await response.json();
-  console.log(result);
-}
+    const data = await response.json();
 
-post("subjects", "English");
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
 
 get("subjects").then((data) => {
-  subjectList.innerHTML = data.message;
+  data = JSON.parse(data);
+  console.log(data);
+  subjectList.innerHTML = data[0].name;
 });
+
+//async function post(i, data) {
+//  const url = api_url + i;
+//  const response = await fetch(url, {
+//    method: "POST",
+//body: [data],
+//});
+//const result = await response.json();
+//console.log(result);
+//}

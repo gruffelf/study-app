@@ -6,6 +6,7 @@
         <title>Study App</title>
         <link rel="stylesheet" href="style/style.css" />
         <link rel="stylesheet" href="style/todo.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
         <div class="navbar">
@@ -26,18 +27,16 @@
             <div class="study-tasks">
                 <span>Studying Tasks</span>
                 <div id="study-task-list">
-                    <div class="task">- Study</div>
-                    <div class="task">- Revise</div>
+
                 </div>
-                <div class="task add-task" onclick="openTask()">+ Add Task</div>
+                <div class="task add-task" onclick="openTask('study')">+ Add Task</div>
             </div>
             <div class="assess-tasks">
                 <span>Assessment Tasks</span>
                 <div id="assess-task-list">
-                    <div class="task">- Assessment Task 1</div>
-                    <div class="task">- Important Essay</div>
+
                 </div>
-                <div class="task add-task" onclick="openTask()">+ Add Task</div>
+                <div class="task add-task" onclick="openTask('assess')">+ Add Task</div>
             </div>
         </div>
 
@@ -45,7 +44,7 @@
 
         <div id="task-entry">
             Task Name
-            <input type="text" id="task-name" placeholder="Enter Task Here"/>
+            <input type="text" id="task-name" placeholder="Enter Task Here" value=""/>
             <button onclick="saveTask()">Enter</button>
         </div>
 
