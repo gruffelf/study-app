@@ -4,7 +4,10 @@ from tinydb import TinyDB, Query
 import json
 
 db = TinyDB('db/db.json')
+
+# SCHEMA
 #db.insert({'user': 'gruffelf', 'pass': 'secret', 'tasks': ["a","b"]})
+
 app = FastAPI()
 
 # Configure CORS
@@ -19,12 +22,6 @@ app.add_middleware(
 @app.get("/test")
 async def test():
     return {"message": "Hello World"}
-
-#@app.post("/subjects")
-#async def create_subject(subject: str):
-#    print(subject)
-#    subjects.insert({'name': subject})
-#    return {"message": "added subject"}
 
 # Returns a specified users tasks from the database
 @app.get("/tasks/{user}")

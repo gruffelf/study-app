@@ -35,13 +35,3 @@ async function post(i, data) {
     console.error("Error:", error);
   }
 }
-
-//async function post(i, data) {
-//  const url = api_url + i;
-//  const response = await fetch(url, {
-//    method: "POST",
-//body: [data],
-//});
-//const result = await response.json();
-//console.log(result);
-//}
