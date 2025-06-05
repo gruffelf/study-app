@@ -1,12 +1,11 @@
-const subjectList = document.getElementById("subjectlist");
+const dev_url = "http://localhost:8000/"; //Local url
+const api_url = dev_url; // Select which url to use
 
-const dev_url = "http://localhost:8000/";
-const api_url = dev_url;
-
-async function get(i) {
+//get request template, parameters are api endpoint, and data to pass through
+async function get(i, user) {
   const url = api_url + i;
   try {
-    const response = await fetch(url);
+    const response = await fetch(url + `/${user}`);
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
@@ -19,11 +18,23 @@ async function get(i) {
   }
 }
 
-get("subjects").then((data) => {
-  data = JSON.parse(data);
-  console.log(data);
-  subjectList.innerHTML = data[0].name;
-});
+async function post(i, data) {
+  const url = api_url + i;
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+    console.log("Success:", result);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
 
 //async function post(i, data) {
 //  const url = api_url + i;

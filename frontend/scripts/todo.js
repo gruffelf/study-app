@@ -6,6 +6,8 @@ assessList = document.getElementById("assess-task-list");
 
 taskName = document.getElementById("task-name");
 
+currentUser = "gruffelf";
+
 function openTask(i) {
   dim.style.display = "block";
   taskEntry.style.display = "flex";
@@ -16,18 +18,18 @@ function saveTask() {
   dim.style.display = "none";
   taskEntry.style.display = "none";
 
-  taskHTML = `
-    <div class="task">
-      <input onclick="taskCheckbox(event)" class="task-checkbox" type="checkbox">
-        ${taskName.value}
-      <i class="fa fa-trash" onclick="deleteTask(event)"></i>
-    </div>`;
+  const name = taskName.value;
+  let category;
 
   if (taskEntry.dataset.category == "study") {
-    studyList.innerHTML += taskHTML;
+    category = "study";
   } else {
-    assessList.innerHTML += taskHTML;
+    category = "assess";
   }
+
+  post("addtask", { user: currentUser, name: name, category: category });
+
+  loadTasks();
 }
 
 function taskCheckbox(e) {
@@ -42,5 +44,38 @@ function taskCheckbox(e) {
 
 function deleteTask(e) {
   const task = e.target.closest(".task");
+  post("deltask", { user: "gruffelf", name: task.dataset.name });
   task.remove();
 }
+
+// Gets a task name, and adds the tasks to the page
+function addTask(name, category) {
+  taskHTML = `
+    <div class="task" data-name="${name}" data-category="${category}">
+      <input onclick="taskCheckbox(event)" class="task-checkbox" type="checkbox">
+        ${name}
+      <i class="fa fa-trash" onclick="deleteTask(event)"></i>
+    </div>`;
+
+  if (category == "study") {
+    studyList.innerHTML += taskHTML;
+  } else {
+    assessList.innerHTML += taskHTML;
+  }
+}
+
+// Get request for currentUser's tasks from database, loops through each tasks and adds them
+function loadTasks() {
+  studyList.innerHTML = "";
+  assessList.innerHTML = "";
+
+  get("tasks", currentUser).then((data) => {
+    data = JSON.parse(data);
+
+    data.forEach((value) => {
+      addTask(value["name"], value["category"]);
+    });
+  });
+}
+
+loadTasks();
