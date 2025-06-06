@@ -23,13 +23,13 @@ function saveTask() {
 
   if (taskEntry.dataset.category == "study") {
     category = "study";
+    addTask(name, "study");
   } else {
     category = "assess";
+    addTask(name, "assess");
   }
 
   post("addtask", { user: currentUser, name: name, category: category });
-
-  loadTasks();
 }
 
 function taskCheckbox(e) {
