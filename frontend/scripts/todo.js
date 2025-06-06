@@ -14,6 +14,11 @@ function openTask(i) {
   taskEntry.dataset.category = i;
 }
 
+function closeTask() {
+  dim.style.display = "none";
+  taskEntry.style.display = "none";
+}
+
 function saveTask() {
   dim.style.display = "none";
   taskEntry.style.display = "none";

@@ -1,6 +1,9 @@
 const dev_url = "http://localhost:8000/"; //Local url
 const api_url = dev_url; // Select which url to use
 
+dim = document.getElementById("dim-overlay");
+loginPage = document.getElementById("login-page");
+
 //get request template, parameters are api endpoint, and data to pass through
 async function get(i, user) {
   const url = api_url + i;
@@ -34,4 +37,14 @@ async function post(i, data) {
   } catch (error) {
     console.error("Error:", error);
   }
+}
+
+function openLogin() {
+  dim.style.display = "block";
+  loginPage.style.display = "flex";
+}
+
+function closeLogin() {
+  dim.style.display = "none";
+  loginPage.style.display = "none";
 }
