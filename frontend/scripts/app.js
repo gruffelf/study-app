@@ -2,7 +2,12 @@ const dev_url = "http://localhost:8000/"; //Local url
 const api_url = dev_url; // Select which url to use
 
 dim = document.getElementById("dim-overlay");
-loginPage = document.getElementById("login-page");
+const loginPage = document.getElementById("login-page");
+
+const userField = document.getElementById("username");
+const passField = document.getElementById("password");
+
+const loginWarning = document.getElementById("login-warning");
 
 //get request template, parameters are api endpoint, and data to pass through
 async function get(i, user) {
@@ -48,3 +53,15 @@ function closeLogin() {
   dim.style.display = "none";
   loginPage.style.display = "none";
 }
+
+function openLoginWarning(text) {
+  loginWarning.innerHTML = text;
+  loginWarning.classList.add("popup-warning-active");
+}
+
+function clearLoginWarning() {
+  loginWarning.classList.remove("popup-warning-active");
+  loginWarning.innerHTML = "";
+}
+
+function login() {}
