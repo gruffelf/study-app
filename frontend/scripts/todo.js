@@ -17,6 +17,7 @@ function openTask(i) {
 function closeTask() {
   dim.style.display = "none";
   taskEntry.style.display = "none";
+  taskName.value = "";
 }
 
 function saveTask() {
@@ -35,6 +36,8 @@ function saveTask() {
   }
 
   post("addtask", { user: currentUser, name: name, category: category });
+
+  taskName.value = "";
 }
 
 function taskCheckbox(e) {
