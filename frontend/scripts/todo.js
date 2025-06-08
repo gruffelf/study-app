@@ -4,9 +4,9 @@ taskEntry = document.getElementById("task-entry");
 studyList = document.getElementById("study-task-list");
 assessList = document.getElementById("assess-task-list");
 
-taskName = document.getElementById("task-name");
+taskWarning = document.getElementById("task-warning");
 
-currentUser = "gruffelf";
+taskName = document.getElementById("task-name");
 
 function openTask(i) {
   dim.style.display = "block";
@@ -21,6 +21,11 @@ function closeTask() {
 }
 
 function saveTask() {
+  if (currentUser == "") {
+    openTaskWarning("Please log in");
+    return;
+  }
+
   dim.style.display = "none";
   taskEntry.style.display = "none";
 
@@ -86,4 +91,16 @@ function loadTasks() {
   });
 }
 
-loadTasks();
+function openTaskWarning(text) {
+  taskWarning.innerHTML = text;
+  taskWarning.classList.add("popup-warning-active");
+}
+
+function clearTaskWarning() {
+  taskWarning.classList.remove("popup-warning-active");
+  taskWarning.innerHTML = "";
+}
+
+if (currentUser != "") {
+  loadTasks();
+}

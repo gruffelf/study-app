@@ -1,3 +1,4 @@
+from array import array
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from tinydb import TinyDB, Query
@@ -27,6 +28,20 @@ async def test():
 @app.get("/tasks/{user}")
 async def get_tasks(user: str):
     return json.dumps(db.search(Query().user == user)[0]["tasks"])
+
+# Recieves login credentials, and checks if they are valid, returninga boolean
+@app.get("/login/{creds}")
+async def login(creds: str):
+    creds = json.loads(creds)
+    validEntries = db.search(Query().user == creds[0])
+
+    if len(validEntries) == 0:
+        return json.dumps({"status": False})
+    else:
+        for i in validEntries:
+            if i["pass"] == creds[1]:
+                return  json.dumps({"status": True})
+        return json.dumps({"status": False})
 
 @app.post("/addtask")
 async def add_task(request: Request):
