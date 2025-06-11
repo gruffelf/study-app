@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Study App</title>
+        <link rel="stylesheet" href="style/style.css" />
+        <link rel="stylesheet" href="style/login.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+        />
+    </head>
+    <body>
+        <div class="navbar">
+            <img src="assets/logoipsum.png"></img>
+        </div>
+
+        <div id="login-page" class="login-page">
+            <div class="popup-warning" id="login-warning"></div>
+            Username
+            <input
+                type="text"
+                id="username"
+                placeholder="Enter Username"
+                value=""
+            />
+            Password
+            <input
+                type="text"
+                id="password"
+                placeholder="Enter Password"
+                value=""
+            />
+            <button onclick="login()">Login</button>
+            <button onclick="createAccount()">Create Account</button>
+        </div>
+
+        <script src="scripts/app.js"></script>
+        <script src="scripts/login.js"></script>
+    </body>
+</html>
