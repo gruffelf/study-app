@@ -11,6 +11,7 @@ const loginWarning = document.getElementById("login-warning");
 
 var currentUser = "";
 
+// Checks if current page is not the login page, and if so checks if user it not logged in, and if so will redirect to login page
 if (
   window.location.pathname != "/" &&
   window.location.pathname.includes("index.html") == false
@@ -22,7 +23,6 @@ if (
   }
 }
 
-console.log(currentUser);
 //get request template, parameters are api endpoint, and data to pass through
 async function get(i, user) {
   const url = api_url + i;
@@ -40,6 +40,7 @@ async function get(i, user) {
   }
 }
 
+// Post request template, uses fetch() to make a POST request with some headers and a body
 async function post(i, data) {
   const url = api_url + i;
   try {
@@ -56,4 +57,10 @@ async function post(i, data) {
   } catch (error) {
     console.error("Error:", error);
   }
+}
+
+// Function for logout button at top of navbar. Simply removes login info from cache and redirects to login page
+function logout() {
+  sessionStorage.removeItem("user");
+  window.location.href = "index.html";
 }

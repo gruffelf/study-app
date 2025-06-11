@@ -14,7 +14,7 @@
             <a class="selected" href="todo.html">Todo</a>
             <a href="calender.html">Calender</a>
             <a href="today.html">Today</a>
-            <a class="login-button" onclick="openLogin()">Login</a>
+            <a class="login-button" onclick="logout()">Logout</a>
         </div>
 
         <div class="subjects" id="subjectlist">
@@ -49,18 +49,6 @@
             Task Name
             <input type="text" id="task-name" placeholder="Enter Task Here" value=""/>
             <button onclick="saveTask()">Enter</button>
-        </div>
-
-        <div id="login-page" class="overlay-menu">
-            <i class="fa fa-times close" onclick="closeLogin()"></i>
-            <div class="popup-warning" id="login-warning"></div>
-            Username
-            <input type="text" id="username" placeholder="Enter Username" value=""/>
-            Password
-            <input type="text" id="password" placeholder="Enter Password" value=""/>
-            <button onclick="login()">Login</button>
-            <button onclick="createAccount()">Create Account</button>
-
         </div>
 
         <script src="scripts/app.js"></script>

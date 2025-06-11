@@ -1,16 +1,7 @@
-function openLogin() {
-  dim.style.display = "block";
-  loginPage.style.display = "flex";
-  userField.value = "";
-  passField.value = "";
-}
+// In case user access page while logged in, remove login to remove any issues
+sessionStorage.removeItem("user");
 
-function closeLogin() {
-  dim.style.display = "none";
-  loginPage.style.display = "none";
-  clearLoginWarning();
-}
-
+// Creates a div above login with a custom message
 function openLoginWarning(text, colour = null) {
   if (colour != null) {
     loginWarning.style.backgroundColor = colour;
@@ -19,6 +10,7 @@ function openLoginWarning(text, colour = null) {
   loginWarning.classList.add("popup-warning-active");
 }
 
+// Closes login warning
 function clearLoginWarning() {
   loginWarning.classList.remove("popup-warning-active");
   loginWarning.innerHTML = "";
@@ -48,3 +40,5 @@ function login() {
     },
   );
 }
+
+function createAccout() {}
