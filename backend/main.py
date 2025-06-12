@@ -8,6 +8,7 @@ db = TinyDB('db/db.json')
 
 # SCHEMA
 #db.insert({'user': 'gruffelf', 'pass': 'secret', 'tasks': ["a","b"]})
+schema = {'user': '', 'pass': '', 'tasks': []}
 
 app = FastAPI()
 
@@ -42,6 +43,20 @@ async def login(creds: str):
             if i["pass"] == creds[1]:
                 return  json.dumps({"status": True})
         return json.dumps({"status": False})
+
+@app.get("/createAccount/{creds}")
+async def createAccount(creds: str):
+    creds = json.loads(creds)
+
+    if (db.search(Query().user == creds[0])):
+        return json.dumps({"status": False})
+    else:
+        entry = schema
+        entry['user'] = creds[0]
+        entry['pass'] = creds[1]
+        db.insert(entry)
+        return json.dumps({"status": True})
+
 
 @app.post("/addtask")
 async def add_task(request: Request):

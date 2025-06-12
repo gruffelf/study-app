@@ -1,12 +1,19 @@
 dim = document.getElementById("dim-overlay");
 taskEntry = document.getElementById("task-entry");
 
+subjectList = document.getElementById("subjectlist");
+
 studyList = document.getElementById("study-task-list");
 assessList = document.getElementById("assess-task-list");
 
 taskWarning = document.getElementById("task-warning");
 
 taskName = document.getElementById("task-name");
+
+subjectlist.innerHTML +=
+  "<p style='text-align: right; flex-grow: 10;'>Welcome " +
+  currentUser +
+  "</p>";
 
 function openTask(i) {
   dim.style.display = "block";

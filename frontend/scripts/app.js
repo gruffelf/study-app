@@ -2,12 +2,6 @@ const dev_url = "http://localhost:8000/"; //Local url
 const api_url = dev_url; // Select which url to use
 
 dim = document.getElementById("dim-overlay");
-const loginPage = document.getElementById("login-page");
-
-const userField = document.getElementById("username");
-const passField = document.getElementById("password");
-
-const loginWarning = document.getElementById("login-warning");
 
 var currentUser = "";
 

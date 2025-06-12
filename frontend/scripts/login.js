@@ -1,3 +1,8 @@
+const userField = document.getElementById("username");
+const passField = document.getElementById("password");
+
+const loginWarning = document.getElementById("login-warning");
+
 // In case user access page while logged in, remove login to remove any issues
 sessionStorage.removeItem("user");
 
@@ -28,12 +33,8 @@ function login() {
       data = JSON.parse(data);
 
       if (data["status"] == true) {
-        currentUser = userField.value;
         openLoginWarning("Logged in as " + userField.value, "green");
-        sessionStorage.setItem("user", userField.value);
-        setTimeout(() => {
-          window.location.href = "todo.html";
-        }, "500");
+        open(userField.value);
       } else {
         openLoginWarning("Invalid Credentials");
       }
@@ -41,4 +42,33 @@ function login() {
   );
 }
 
-function createAccout() {}
+function createAccount() {
+  if (userField.value == "" || passField.value == "") {
+    openLoginWarning("Invalid Credentials");
+    return;
+  }
+
+  get("createAccount", JSON.stringify([userField.value, passField.value])).then(
+    (data) => {
+      data = JSON.parse(data);
+
+      if (data["status"] == false) {
+        openLoginWarning("Username taken");
+      } else {
+        openLoginWarning(
+          "Account " + userField.value + " created, logging you in",
+          "green",
+        );
+        open(userField.value);
+      }
+    },
+  );
+}
+
+function open(user) {
+  currentUser = user;
+  sessionStorage.setItem("user", userField.value);
+  setTimeout(() => {
+    window.location.href = "todo.html";
+  }, "500");
+}
