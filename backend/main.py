@@ -8,7 +8,7 @@ db = TinyDB('db/db.json')
 
 # SCHEMA
 #db.insert({'user': 'gruffelf', 'pass': 'secret', 'tasks': ["a","b"]})
-schema = {'user': '', 'pass': '', 'tasks': []}
+schema = {'user': '', 'pass': '', 'tasks': [], 'subjects': ["default"]}
 
 app = FastAPI()
 
@@ -26,9 +26,17 @@ async def test():
     return {"message": "Hello World"}
 
 # Returns a specified users tasks from the database
-@app.get("/tasks/{user}")
-async def get_tasks(user: str):
-    return json.dumps(db.search(Query().user == user)[0]["tasks"])
+@app.get("/tasks/{data}")
+async def get_tasks(data: str):
+    data = json.loads(data)
+    user = data[0]
+    subject = data[1]
+    tasks = db.search(Query().user == user)[0]["tasks"]
+    filtered = []
+    for task in tasks:
+        if task["subject"] == subject:
+            filtered.append(task);
+    return json.dumps(filtered)
 
 # Recieves login credentials, and checks if they are valid, returninga boolean
 @app.get("/login/{creds}")
@@ -57,6 +65,9 @@ async def createAccount(creds: str):
         db.insert(entry)
         return json.dumps({"status": True})
 
+@app.get("/subjects/{user}")
+async def get_subjects(user: str):
+    return json.dumps(db.search(Query().user == user)[0]["subjects"])
 
 @app.post("/addtask")
 async def add_task(request: Request):
@@ -66,7 +77,7 @@ async def add_task(request: Request):
         data = json.loads(data)
 
         oldTasks = db.search(Query().user == data["user"])[0]["tasks"]
-        newTask = {"name": data["name"],"category": data["category"]}
+        newTask = {"name": data["name"],"category": data["category"], "subject": data["subject"]}
 
         db.update({"tasks": oldTasks + [newTask]}, Query().user == data["user"])
 
