@@ -19,11 +19,8 @@
 
         <div class="subjects" id="subjectlist">
             <div id="subject-container" class="subject-container">
-                <span class="subject-selected">FEnglish</span>
-                <span>Science</span>
-                <span>Maths</span>
             </div>
-            <span class="add-subject">+ Add Subject</span>
+            <span class="add-subject" onclick="openSubject()">+ Add Subject</span>
         </div>
 
         <div class="current-subject">
@@ -55,6 +52,14 @@
             Task Name
             <input type="text" id="task-name" placeholder="Enter Task Here" value=""/>
             <button onclick="saveTask()">Enter</button>
+        </div>
+
+        <div id="subject-entry" class="overlay-menu">
+            <i class="fa fa-times close" onclick="closeSubject()"></i>
+            <div class="popup-warning" id="subject-warning"></div>
+            Subject Name
+            <input type="text" id="subject-name" placeholder="Enter Subject Here" value=""/>
+            <button onclick="createSubject()">Enter</button>
         </div>
 
         <script src="scripts/app.js"></script>

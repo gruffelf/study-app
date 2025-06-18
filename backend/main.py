@@ -104,3 +104,25 @@ async def del_task(request: Request):
         return {"message": "Data received"}
     except json.JSONDecodeError:
         return {"error": "Invalid JSON"}
+
+@app.post("/addsubject")
+async def add_subject(request: Request):
+    data = await request.body()
+
+    try:
+        data = json.loads(data)
+        user = data["user"]
+        subject = data["subject"]
+
+        subjects = db.search(Query().user == user)[0]["subjects"]
+
+        if subject in subjects:
+            return {"error": "Subject Already Exists"}
+
+        subjects.append(subject)
+
+        db.update({"subjects": subjects}, Query().user == data["user"])
+
+        return {"message": "Data received"}
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON"}

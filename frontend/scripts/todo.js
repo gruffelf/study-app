@@ -2,6 +2,10 @@ dim = document.getElementById("dim-overlay");
 taskEntry = document.getElementById("task-entry");
 
 subjectList = document.getElementById("subjectlist");
+subjectEntry = document.getElementById("subject-entry");
+subjectName = document.getElementById("subject-name");
+
+subjectWarning = document.getElementById("subject-warning");
 
 studyList = document.getElementById("study-task-list");
 assessList = document.getElementById("assess-task-list");
@@ -146,6 +150,44 @@ async function loadSubjects() {
       }
     });
   });
+}
+
+function openSubject() {
+  dim.style.display = "block";
+  subjectEntry.style.display = "flex";
+}
+
+function closeSubject() {
+  clearSubjectWarning();
+  dim.style.display = "none";
+  subjectEntry.style.display = "none";
+  subjectName.value = "";
+}
+
+function openSubjectWarning(text) {
+  subjectWarning.innerHTML = text;
+  subjectWarning.classList.add("popup-warning-active");
+}
+
+function clearSubjectWarning() {
+  subjectWarning.classList.remove("popup-warning-active");
+  subjectWarning.innerHTML = "";
+}
+
+async function createSubject() {
+  clearSubjectWarning();
+
+  result = await post("addsubject", {
+    user: currentUser,
+    subject: subjectName.value,
+  });
+
+  if (result["error"] != null) {
+    openSubjectWarning(result["error"]);
+  } else {
+    addSubject(subjectName.value);
+    closeSubject();
+  }
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
