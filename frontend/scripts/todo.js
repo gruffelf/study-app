@@ -4,7 +4,7 @@ taskEntry = document.getElementById("task-entry");
 subjectList = document.getElementById("subjectlist");
 subjectEntry = document.getElementById("subject-entry");
 subjectName = document.getElementById("subject-name");
-
+subjectDisplay = document.getElementById("subject-display");
 subjectWarning = document.getElementById("subject-warning");
 
 studyList = document.getElementById("study-task-list");
@@ -119,6 +119,7 @@ function addSubject(name, first = false) {
   if (first && currentSubject == "") {
     subjectContainer.innerHTML += `<span onclick="changeSubject(event)" class="subject-selected">${name}</span>`;
     currentSubject = name;
+    subjectDisplay.innerHTML = currentSubject;
   } else {
     subjectContainer.innerHTML += `<span onclick="changeSubject(event)">${name}</span>`;
   }
@@ -132,6 +133,9 @@ function changeSubject(e) {
   e.target.classList.add("subject-selected");
 
   currentSubject = e.target.innerHTML;
+
+  subjectDisplay.innerHTML = currentSubject;
+
   console.log(currentSubject);
   loadTasks();
 }
