@@ -1,6 +1,10 @@
 # study-app
 Finally a project managment tool for high school students, to keep you focused and on track.
 
+## How to view
+Visit page here [mdr-core.torpy.co/study](https://mdr-core.torpy.co/study)
+
+API info here [mdr-core.torpy.co/api/docs](https://mdr-core.torpy.co/api/docs)
 
 ## How to run
 ### Web Server
