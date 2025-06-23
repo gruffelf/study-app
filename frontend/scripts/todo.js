@@ -1,11 +1,16 @@
 dim = document.getElementById("dim-overlay");
 taskEntry = document.getElementById("task-entry");
 
+subjectlist.innerHTML +=
+  "<p style='text-align: right; flex-grow: 5;'>Welcome " + currentUser + "</p>";
+
 subjectList = document.getElementById("subjectlist");
 subjectEntry = document.getElementById("subject-entry");
 subjectName = document.getElementById("subject-name");
 subjectDisplay = document.getElementById("subject-display");
 subjectWarning = document.getElementById("subject-warning");
+
+subjectContainer = document.getElementById("subject-container");
 
 studyList = document.getElementById("study-task-list");
 assessList = document.getElementById("assess-task-list");
@@ -126,9 +131,13 @@ function addSubject(name, first = false) {
 }
 
 function changeSubject(e) {
-  subjectContainer
-    .querySelector(".subject-selected")
-    .classList.remove("subject-selected");
+  try {
+    subjectContainer
+      .querySelector(".subject-selected")
+      .classList.remove("subject-selected");
+  } catch {
+    let a;
+  }
 
   e.target.classList.add("subject-selected");
 
@@ -191,17 +200,25 @@ async function createSubject() {
   } else {
     addSubject(subjectName.value);
     closeSubject();
+    changeSubject({ target: subjectContainer.lastChild });
+  }
+}
+
+async function deleteSubject() {
+  result = await post("delsubject", {
+    user: currentUser,
+    subject: currentSubject,
+  });
+
+  if (result["error"] != null) {
+    console.log(result["error"]);
+  } else {
+    subjectContainer.querySelector(".subject-selected").remove();
+    changeSubject({ target: subjectContainer.children[0] });
   }
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
-  subjectlist.innerHTML +=
-    "<p style='text-align: right; flex-grow: 5;'>Welcome " +
-    currentUser +
-    "</p>";
-
-  subjectContainer = document.getElementById("subject-container");
-
   await loadSubjects();
 
   if (currentUser != "") {
