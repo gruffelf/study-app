@@ -29,14 +29,14 @@
 
         <div class="tasks">
             <div class="study-tasks">
-                <span>Studying Tasks</span>
+                <span class="task-title">Studying Tasks</span>
                 <div id="study-task-list">
 
                 </div>
                 <div class="task add-task" onclick="openTask('study')">+ Add Task</div>
             </div>
             <div class="assess-tasks">
-                <span>Assessment Tasks</span>
+                <span class="task-title">Assessment Tasks</span>
                 <div id="assess-task-list">
 
                 </div>
@@ -51,6 +51,12 @@
             <div class="popup-warning" id="task-warning"></div>
             Task Name
             <input type="text" id="task-name" placeholder="Enter Task Here" value=""/>
+            Task Description
+            <input type="text" id="task-description" placeholder="Add details to task" value=""/>
+            <div id="due-date">
+                Due Date
+                <input id="task-date" type="date"/>
+            </div>
             <button onclick="saveTask()">Enter</button>
         </div>
 

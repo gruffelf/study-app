@@ -77,7 +77,7 @@ async def add_task(request: Request):
         data = json.loads(data)
 
         oldTasks = db.search(Query().user == data["user"])[0]["tasks"]
-        newTask = {"name": data["name"],"category": data["category"], "subject": data["subject"]}
+        newTask = {"name": data["name"],"category": data["category"], "subject": data["subject"], "description": data["description"], "date": data["date"]}
 
         db.update({"tasks": oldTasks + [newTask]}, Query().user == data["user"])
 

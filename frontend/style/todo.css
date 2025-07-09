@@ -78,6 +78,9 @@
 }
 .study-tasks span,
 .assess-tasks span {
+}
+
+.task-title {
     text-decoration: underline;
 }
 
@@ -88,10 +91,13 @@
     margin-left: 8%;
     margin-right: 8%;
     border-radius: 15px;
-    padding-left: 3%;
-    padding-right: 3%;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
+    padding-top: 2.5%;
+    padding-bottom: 2.5%;
     display: flex;
     justify-content: space-between;
+    gap: 1rem;
     align-items: center;
     transition: all 0.3s ease;
     min-height: 1.5rem;
@@ -100,6 +106,22 @@
 .task i {
     color: gray;
     cursor: pointer;
+}
+
+.task-data {
+    flex-grow: 3;
+    display: flex;
+    gap: 0.7rem;
+    flex-direction: column;
+}
+
+.task-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.task-description {
+    font-size: 0.75rem;
 }
 
 .task-checkbox {

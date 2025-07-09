@@ -18,10 +18,21 @@ assessList = document.getElementById("assess-task-list");
 taskWarning = document.getElementById("task-warning");
 
 taskName = document.getElementById("task-name");
+taskDescription = document.getElementById("task-description");
+taskDate = document.getElementById("task-date");
+taskDateContainer = document.getElementById("due-date");
 
 currentSubject = "";
 
 function openTask(i) {
+  if (i == "study") {
+    taskDate.valueAsDate = null;
+    taskDateContainer.style.display = "none";
+  } else {
+    taskDate.valueAsDate = new Date();
+    taskDateContainer.style.display = "block";
+  }
+
   dim.style.display = "block";
   taskEntry.style.display = "flex";
   taskEntry.dataset.category = i;
@@ -31,6 +42,7 @@ function closeTask() {
   dim.style.display = "none";
   taskEntry.style.display = "none";
   taskName.value = "";
+  taskDescription.value = "";
 }
 
 function saveTask() {
@@ -43,19 +55,24 @@ function saveTask() {
   taskEntry.style.display = "none";
 
   const name = taskName.value;
+  description = taskDescription.value;
   let category;
 
   if (taskEntry.dataset.category == "study") {
     category = "study";
-    addTask(name, "study");
+    date = null;
+    addTask(name, "study", description, date);
   } else {
     category = "assess";
-    addTask(name, "assess");
+    date = taskDate.valueAsDate;
+    addTask(name, "assess", description, date);
   }
 
   post("addtask", {
     user: currentUser,
     name: name,
+    description: description,
+    date: date,
     category: category,
     subject: currentSubject,
   });
@@ -80,17 +97,29 @@ function deleteTask(e) {
 }
 
 // Gets a task name, and adds the tasks to the page
-function addTask(name, category) {
-  taskHTML = `
-    <div class="task" data-name="${name}" data-category="${category}">
-      <input onclick="taskCheckbox(event)" class="task-checkbox" type="checkbox">
-        ${name}
-      <i class="fa fa-trash" onclick="deleteTask(event)"></i>
-    </div>`;
-
+function addTask(name, category, description, date) {
   if (category == "study") {
+    taskHTML = `
+      <div class="task" data-name="${name}" data-category="${category}">
+        <input onclick="taskCheckbox(event)" class="task-checkbox" type="checkbox">
+        <div class="task-data">
+            <span class="task-name">${name}</span>
+            <span class="task-description">${description}</span>
+        </div>
+        <i class="fa fa-trash" onclick="deleteTask(event)"></i>
+      </div>`;
     studyList.innerHTML += taskHTML;
   } else {
+    taskHTML = `
+      <div class="task" data-name="${name}" data-category="${category}">
+        <input onclick="taskCheckbox(event)" class="task-checkbox" type="checkbox">
+        <div class="task-data">
+            <span class="task-name">${name}</span>
+            <span class="task-description">${description}</span>
+            <span class="task-due-date">Due: ${date.toLocaleString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}</span>
+        </div>
+        <i class="fa fa-trash" onclick="deleteTask(event)"></i>
+      </div>`;
     assessList.innerHTML += taskHTML;
   }
 }
@@ -105,7 +134,12 @@ function loadTasks() {
     console.log(data);
 
     data.forEach((value) => {
-      addTask(value["name"], value["category"]);
+      addTask(
+        value["name"],
+        value["category"],
+        value["description"],
+        new Date(value["date"]),
+      );
     });
   });
 }
