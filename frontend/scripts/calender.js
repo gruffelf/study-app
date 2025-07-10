@@ -32,26 +32,23 @@ for (let i = 0; i < dayHeadings.length; i++) {
   }
 }
 
-function addTask(name, category, description, date) {
+function addTask(name, category, description, date, subject) {
   if (category == "study") {
     taskHTML = `
       <div class="task" data-name="${name}" data-category="${category}">
-
         <div class="task-data">
             <span class="task-name">${name}</span>
-
+            <span class="task-subject">From ${subject}</span>
         </div>
-
       </div>`;
     taskContainer.innerHTML += taskHTML;
   } else {
     taskHTML = `
       <div class="task" data-name="${name}" data-category="${category}">
-
         <div class="task-data">
             <span class="task-name">Continue "${name}"</span>
+            <span class="task-subject">From ${subject}</span>
         </div>
-
       </div>`;
     taskContainer.innerHTML += taskHTML;
   }
@@ -69,6 +66,7 @@ function loadTasks() {
         value["category"],
         value["description"],
         new Date(value["date"]),
+        value["subject"],
       );
     });
   });

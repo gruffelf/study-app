@@ -48,10 +48,6 @@
 .task {
     text-align: left;
     border-radius: 15px;
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    align-items: center;
     transition: all 0.3s ease;
     min-height: 1.5rem;
     padding: 0.5rem;
@@ -63,7 +59,7 @@
 .task-data {
     flex-grow: 3;
     display: flex;
-    gap: 0.7rem;
+    gap: 0.2rem;
     flex-direction: column;
 }
 
@@ -82,4 +78,9 @@
     flex-wrap: wrap;
     display: flex;
     gap: 2rem;
+}
+
+.task-subject {
+    font-weight: normal;
+    font-size: 0.9rem;
 }

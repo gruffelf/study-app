@@ -123,7 +123,7 @@ async def add_subject(request: Request):
         if subject in subjects:
             return {"error": "Subject Already Exists"}
 
-        if [subject] == "all":
+        if subject == "all":
             return {"error": "Invalid Subject Name"}
 
         subjects.append(subject)
