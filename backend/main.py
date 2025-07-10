@@ -33,9 +33,13 @@ async def get_tasks(data: str):
     subject = data[1]
     tasks = db.search(Query().user == user)[0]["tasks"]
     filtered = []
+
+    if subject == "all":
+        return json.dumps(tasks)
+
     for task in tasks:
         if task["subject"] == subject:
-            filtered.append(task);
+            filtered.append(task)
     return json.dumps(filtered)
 
 # Recieves login credentials, and checks if they are valid, returninga boolean
@@ -118,6 +122,9 @@ async def add_subject(request: Request):
 
         if subject in subjects:
             return {"error": "Subject Already Exists"}
+
+        if [subject] == "all":
+            return {"error": "Invalid Subject Name"}
 
         subjects.append(subject)
 
