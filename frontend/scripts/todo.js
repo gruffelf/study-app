@@ -57,15 +57,16 @@ function saveTask() {
   const name = taskName.value;
   description = taskDescription.value;
   let category;
+  id = crypto.randomUUID();
 
   if (taskEntry.dataset.category == "study") {
     category = "study";
     date = null;
-    addTask(name, "study", description, date);
+    addTask(name, "study", description, date, id);
   } else {
     category = "assess";
     date = taskDate.valueAsDate;
-    addTask(name, "assess", description, date);
+    addTask(name, "assess", description, date, id);
   }
 
   post("addtask", {
@@ -75,6 +76,7 @@ function saveTask() {
     date: date,
     category: category,
     subject: currentSubject,
+    id: id,
   });
 
   taskName.value = "";
@@ -92,15 +94,15 @@ function taskCheckbox(e) {
 
 function deleteTask(e) {
   const task = e.target.closest(".task");
-  post("deltask", { user: "gruffelf", name: task.dataset.name });
+  post("deltask", { user: "gruffelf", id: task.dataset.id });
   task.remove();
 }
 
 // Gets a task name, and adds the tasks to the page
-function addTask(name, category, description, date) {
+function addTask(name, category, description, date, id) {
   if (category == "study") {
     taskHTML = `
-      <div class="task" data-name="${name}" data-category="${category}">
+      <div class="task" data-name="${name}" data-category="${category}" data-id="${id}">
         <input onclick="taskCheckbox(event)" class="task-checkbox" type="checkbox">
         <div class="task-data">
             <span class="task-name">${name}</span>
@@ -111,7 +113,7 @@ function addTask(name, category, description, date) {
     studyList.innerHTML += taskHTML;
   } else {
     taskHTML = `
-      <div class="task" data-name="${name}" data-category="${category}">
+      <div class="task" data-name="${name}" data-category="${category}" data-id="${id}">
         <input onclick="taskCheckbox(event)" class="task-checkbox" type="checkbox">
         <div class="task-data">
             <span class="task-name">${name}</span>
@@ -139,6 +141,7 @@ function loadTasks() {
         value["category"],
         value["description"],
         new Date(value["date"]),
+        value["id"],
       );
     });
   });

@@ -81,7 +81,7 @@ async def add_task(request: Request):
         data = json.loads(data)
 
         oldTasks = db.search(Query().user == data["user"])[0]["tasks"]
-        newTask = {"name": data["name"],"category": data["category"], "subject": data["subject"], "description": data["description"], "date": data["date"]}
+        newTask = {"name": data["name"],"category": data["category"], "subject": data["subject"], "description": data["description"], "date": data["date"], "id": data["id"]}
 
         db.update({"tasks": oldTasks + [newTask]}, Query().user == data["user"])
 
@@ -97,9 +97,9 @@ async def del_task(request: Request):
         data = json.loads(data)
 
         tasks = db.search(Query().user == data["user"])[0]["tasks"]
-        print(data["name"])
+        print(data["id"])
         for i in tasks:
-            if i["name"] == data["name"]:
+            if i["id"] == data["id"]:
 
                 tasks.remove(i);
 
@@ -153,10 +153,13 @@ async def del_subject(request: Request):
         db.update({"subjects": subjects}, Query().user == data["user"])
 
         tasks = db.search(Query().user == user)[0]["tasks"]
+        delList = []
 
         for i in tasks:
             if i["subject"] == subject:
-                tasks.remove(i);
+                delList.append(i)
+
+        for i in delList : tasks.remove(i)
 
         db.update({"tasks": tasks}, Query().user == data["user"])
 
