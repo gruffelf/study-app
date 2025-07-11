@@ -42,12 +42,20 @@ function dragstartHandler(e) {
   e.dataTransfer.setData("text", e.target.id);
 }
 
+// When dropped into a weekday
 function onDrop(e) {
   e.preventDefault();
   data = e.dataTransfer.getData("text");
   e.target.appendChild(document.getElementById(data));
   console.log(e.target.dataset.day);
   console.log(data);
+}
+
+// When dropped back into task bank
+function onReturnDrop(e) {
+  e.preventDefault();
+  data = e.dataTransfer.getData("text");
+  e.target.appendChild(document.getElementById(data));
 }
 
 function addTask(name, category, description, date, subject, id) {
