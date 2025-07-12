@@ -166,3 +166,26 @@ async def del_subject(request: Request):
         return {"message": "Data received"}
     except json.JSONDecodeError:
         return {"error": "Invalid JSON"}
+
+@app.post("/edittask")
+async def edit_task(request: Request):
+    data = await request.body()
+
+    try:
+        data = json.loads(data)
+
+        if data["feature"] == "day":
+            tasks = db.search(Query().user == data["user"])[0]["tasks"]
+
+            for i in tasks:
+                if i["id"] == data["id"]:
+                    if data["value"]:
+                        i.update({"day": data["value"]})
+                    else:
+                        i.pop("day")
+
+            db.update({"tasks": tasks}, Query().user == data["user"])
+
+        return {"message": "Data received"}
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON"}
