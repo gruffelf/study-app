@@ -6,22 +6,85 @@ weekContainer.addEventListener(
   "wheel",
   function (e) {
     e.preventDefault();
-    if (e.deltaY > 0) weekContainer.scrollLeft += 20;
+    if (e.deltaX > 0) weekContainer.scrollLeft += 20;
     else weekContainer.scrollLeft -= 20;
+    if (e.deltaY > 0) window.scrollBy(0, 15);
+    else window.scrollBy(0, -15);
   },
   { passive: false },
 );
 
+let mouseDown = false;
+let startX;
+let scrollLeft;
+
+weekContainer.addEventListener(
+  "mousedown",
+  function (e) {
+    mouseDown = true;
+    startX = e.pageX - weekContainer.offsetLeft;
+    scrollLeft = weekContainer.scrollLeft;
+  },
+  false,
+);
+
+weekContainer.addEventListener(
+  "mouseup",
+  function (e) {
+    mouseDown = false;
+  },
+  false,
+);
+
+weekContainer.addEventListener(
+  "mousemove",
+  function (e) {
+    e.preventDefault();
+    if (!mouseDown) {
+      return;
+    }
+
+    currentX = e.pageX - weekContainer.offsetLeft;
+    scroll = currentX - startX;
+    weekContainer.scrollLeft = scrollLeft - scroll;
+  },
+  false,
+);
+
+let scrolling = null;
+let currentPageX = null;
+
 function dragoverHandler(e) {
   e.preventDefault();
+
+  currentPageX = e.pageX;
 }
 
 function dragstartHandler(e) {
   e.dataTransfer.setData("text", e.target.id);
+
+  if (scrolling) {
+    return;
+  }
+
+  scrolling = setInterval(() => {
+    if (currentPageX > window.innerWidth * 0.9) {
+      weekContainer.scrollLeft += 30;
+    }
+    if (currentPageX < window.innerWidth * 0.1) {
+      weekContainer.scrollLeft -= 30;
+    }
+  }, 32);
 }
 
 // When dropped into a weekday
 function onDrop(e) {
+  mouseDown = false;
+  if (scrolling) {
+    clearInterval(scrolling);
+    scrolling = null;
+  }
+
   e.preventDefault();
   data = e.dataTransfer.getData("text");
   e.currentTarget.appendChild(document.getElementById(data));
@@ -37,6 +100,12 @@ function onDrop(e) {
 
 // When dropped back into task bank
 function onReturnDrop(e) {
+  mouseDown = false;
+  if (scrolling) {
+    clearInterval(scrolling);
+    scrolling = null;
+  }
+
   e.preventDefault();
   data = e.dataTransfer.getData("text");
   e.target.appendChild(document.getElementById(data));
