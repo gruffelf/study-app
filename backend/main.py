@@ -31,8 +31,17 @@ async def get_tasks(data: str):
     data = json.loads(data)
     user = data[0]
     subject = data[1]
+
     tasks = db.search(Query().user == user)[0]["tasks"]
     filtered = []
+
+    if len(data) == 3:
+        day = data[2]
+        for task in tasks:
+            if "day" in task:
+                if str(task["day"]) == str(day):
+                    filtered.append(task)
+        return json.dumps(filtered)
 
     if subject == "all":
         return json.dumps(tasks)

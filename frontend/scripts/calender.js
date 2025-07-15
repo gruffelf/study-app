@@ -68,10 +68,10 @@ function dragstartHandler(e) {
   }
 
   scrolling = setInterval(() => {
-    if (currentPageX > window.innerWidth * 0.9) {
+    if (currentPageX > window.innerWidth * 0.85) {
       weekContainer.scrollLeft += 30;
     }
-    if (currentPageX < window.innerWidth * 0.1) {
+    if (currentPageX < window.innerWidth * 0.15) {
       weekContainer.scrollLeft -= 30;
     }
   }, 32);
