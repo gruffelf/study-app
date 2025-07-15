@@ -1,4 +1,5 @@
 taskContainer = document.getElementById("task-container");
+timer = document.getElementById("timer");
 
 function addTask(name, category, description, date, subject, id, day) {
   if (category == "study") {
@@ -46,5 +47,18 @@ async function loadTasks() {
 document.addEventListener("DOMContentLoaded", async function () {
   currentDay = new Date().getDay();
 
-  loadTasks();
+  await loadTasks();
+
+  var circle = new ProgressBar.Circle(timer, {
+    color: "green",
+    duration: 3000,
+    easing: "easeInOut",
+    strokeWidth: 9,
+    text: {
+      value: "25:13",
+    },
+  });
+  circle.set(0.9);
+  circle.setText("Times up");
+  circle.animate(0.5);
 });
