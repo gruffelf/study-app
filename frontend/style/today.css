@@ -54,9 +54,34 @@
 #timer {
     height: 300px;
     margin-top: 2rem;
+    margin-right: 2rem;
 }
 
 #timer > svg {
     height: 100%;
     display: block;
+}
+
+.stages {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.stages div {
+    font-size: 1rem;
+    font-weight: normal;
+    border: 1px solid black;
+}
+
+.timer-section {
+    display: flex;
+    justify-content: center;
+}
+
+.studying {
+    background-color: green;
+    color: white;
+    border-color: white;
 }
