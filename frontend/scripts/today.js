@@ -58,7 +58,22 @@ document.addEventListener("DOMContentLoaded", async function () {
       value: "25:13",
     },
   });
-  circle.set(0.9);
+
   circle.setText("Times up");
-  circle.animate(0.5);
+  circle.set(1);
+
+  maxSeconds = 10;
+  seconds = 0;
+
+  timerInterval = setInterval(() => {
+    circle.set(seconds / maxSeconds);
+    circle.setText(`00:${maxSeconds - seconds}`);
+
+    if (seconds >= maxSeconds) {
+      circle.setText("Times up");
+      clearInterval(timerInterval);
+    }
+
+    seconds += 1;
+  }, 1000);
 });
