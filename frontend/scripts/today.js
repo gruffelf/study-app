@@ -44,36 +44,65 @@ async function loadTasks() {
   );
 }
 
+timerInterval = null;
+circle = null;
+maxSeconds = 10;
+seconds = 0;
+timerButton = document.getElementById("timer-button");
+
+function timerTick() {
+  circle.animate(seconds / maxSeconds);
+  currentTime = maxSeconds - seconds;
+  minutes = Math.floor(currentTime / 60);
+  circle.setText(
+    `${minutes.toLocaleString(undefined, { minimumIntegerDigits: 2 })}:${(currentTime - 60 * minutes).toLocaleString(undefined, { minimumIntegerDigits: 2 })}`,
+  );
+}
+
+function stopTimer() {
+  circle.stop();
+  circle.set(1);
+  clearInterval(timerInterval);
+  timerInterval = null;
+  seconds = 0;
+  timerButton.textContent = "Start Session";
+}
+
+function startTimer(e) {
+  if (!timerInterval) {
+    timerButton.textContent = "Stop Session";
+    circle.set(0);
+    timerTick();
+    timerInterval = setInterval(() => {
+      timerTick();
+
+      if (seconds > maxSeconds) {
+        circle.setText("Times up");
+        stopTimer();
+      } else {
+        seconds += 1;
+      }
+    }, 1000);
+  } else {
+    circle.setText("Ready to Study");
+    stopTimer();
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async function () {
   currentDay = new Date().getDay();
 
-  await loadTasks();
+  loadTasks();
 
-  var circle = new ProgressBar.Circle(timer, {
+  circle = new ProgressBar.Circle(timer, {
     color: "green",
-    duration: 3000,
-    easing: "easeInOut",
+    duration: 1000,
+    easing: "linear",
     strokeWidth: 9,
     text: {
-      value: "25:13",
+      value: "Ready to Study",
     },
   });
 
-  circle.setText("Times up");
   circle.set(1);
-
-  maxSeconds = 10;
-  seconds = 0;
-
-  timerInterval = setInterval(() => {
-    circle.set(seconds / maxSeconds);
-    circle.setText(`00:${maxSeconds - seconds}`);
-
-    if (seconds >= maxSeconds) {
-      circle.setText("Times up");
-      clearInterval(timerInterval);
-    }
-
-    seconds += 1;
-  }, 1000);
 });
