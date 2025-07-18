@@ -49,6 +49,10 @@ circle = null;
 maxSeconds = 10;
 seconds = 0;
 timerButton = document.getElementById("timer-button");
+times = ["study", "short", "study", "short", "study", "short", "study", "long"];
+stages = document.getElementsByClassName("stage");
+currentStage = 0;
+timeLengths = { study: 25, short: 5, long: 30 };
 
 function timerTick() {
   circle.animate(seconds / maxSeconds);
@@ -70,7 +74,8 @@ function stopTimer() {
 
 function startTimer(e) {
   if (!timerInterval) {
-    timerButton.textContent = "Stop Session";
+    maxSeconds = timeLengths[times[currentStage]] * 60;
+    timerButton.textContent = "Skip Session";
     circle.set(0);
     timerTick();
     timerInterval = setInterval(() => {
@@ -79,6 +84,7 @@ function startTimer(e) {
       if (seconds > maxSeconds) {
         circle.setText("Times up");
         stopTimer();
+        nextStage();
       } else {
         seconds += 1;
       }
@@ -86,6 +92,17 @@ function startTimer(e) {
   } else {
     circle.setText("Ready to Study");
     stopTimer();
+    nextStage();
+  }
+}
+
+function nextStage() {
+  if (stages[currentStage].classList.contains("study")) {
+    stages[currentStage].classList.remove("studying");
+    currentStage += 1;
+    stages[currentStage].classList.add("studying");
+  } else if (stages[currentStage].classList.contains("short")) {
+  } else if (stages[currentStage].classList.contains("long")) {
   }
 }
 
