@@ -34,7 +34,10 @@
                         <div class="long stage">Long Break</div>
                     </div>
                 </div>
-                <button id="timer-button" onclick="startTimer(event)">Start Session</button>
+                <div class="timer-section">
+                    <button id="pause-button" class="hide timer-button" onclick="pauseTimer(event)">Pause Timer</button>
+                    <button id="timer-button" class="timer-button" onclick="startTimer(event)">Start Session</button>
+                </div>
 
             </div>
             <div class="today-tasks" id="task-container">

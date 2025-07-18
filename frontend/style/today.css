@@ -85,3 +85,23 @@
     color: white;
     border-color: white;
 }
+
+.shorting {
+    background-color: blue;
+    color: white;
+    border-color: white;
+}
+
+.longing {
+    background-color: purple;
+    color: white;
+    border-color: white;
+}
+
+.timer-button {
+    margin: 0.5rem;
+}
+
+.hide {
+    opacity: 0;
+}

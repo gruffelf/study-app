@@ -49,10 +49,13 @@ circle = null;
 maxSeconds = 10;
 seconds = 0;
 timerButton = document.getElementById("timer-button");
+pauseButton = document.getElementById("pause-button");
 times = ["study", "short", "study", "short", "study", "short", "study", "long"];
 stages = document.getElementsByClassName("stage");
 currentStage = 0;
 timeLengths = { study: 25, short: 5, long: 30 };
+firstClick = false;
+isPaused = false;
 
 function timerTick() {
   circle.animate(seconds / maxSeconds);
@@ -64,6 +67,7 @@ function timerTick() {
 }
 
 function stopTimer() {
+  pauseButton.classList.add("hide");
   circle.stop();
   circle.set(1);
   clearInterval(timerInterval);
@@ -73,7 +77,15 @@ function stopTimer() {
 }
 
 function startTimer(e) {
+  isPaused = false;
+  pauseButton.classList.remove("hide");
   if (!timerInterval) {
+    if (firstClick) {
+      nextStage();
+    } else {
+      firstClick = true;
+    }
+
     maxSeconds = timeLengths[times[currentStage]] * 60;
     timerButton.textContent = "Skip Session";
     circle.set(0);
@@ -82,28 +94,64 @@ function startTimer(e) {
       timerTick();
 
       if (seconds > maxSeconds) {
-        circle.setText("Times up");
+        circle.setText("Times up. Ready to Continue?");
         stopTimer();
-        nextStage();
       } else {
         seconds += 1;
       }
     }, 1000);
   } else {
-    circle.setText("Ready to Study");
+    circle.setText("Ready to Start");
     stopTimer();
+    firstClick = false;
     nextStage();
   }
 }
 
-function nextStage() {
-  if (stages[currentStage].classList.contains("study")) {
-    stages[currentStage].classList.remove("studying");
-    currentStage += 1;
-    stages[currentStage].classList.add("studying");
-  } else if (stages[currentStage].classList.contains("short")) {
-  } else if (stages[currentStage].classList.contains("long")) {
+function pauseTimer(e) {
+  if (isPaused) {
+    isPaused = false;
+    pauseButton.textContent = "Pause Timer";
+    timerInterval = setInterval(() => {
+      timerTick();
+
+      if (seconds > maxSeconds) {
+        circle.setText("Times up. Ready to Continue?");
+        stopTimer();
+      } else {
+        seconds += 1;
+      }
+    }, 1000);
+  } else {
+    isPaused = true;
+    pauseButton.textContent = "Resume Timer";
+    clearInterval(timerInterval);
   }
+}
+
+stageClasses = { study: "studying", short: "shorting", long: "longing" };
+
+function nextStage() {
+  stages[currentStage].classList.forEach(function (i) {
+    if (i in stageClasses) {
+      stages[currentStage].classList.remove(stageClasses[i]);
+      return;
+    }
+  });
+  currentStage += 1;
+  if (currentStage >= 8) {
+    currentStage = 0;
+  }
+
+  stages[currentStage].classList.forEach(function (i) {
+    if (i in stageClasses) {
+      stages[currentStage].classList.add(stageClasses[i]);
+      currentColor = getComputedStyle(stages[currentStage]).backgroundColor;
+      circle.path.setAttribute("stroke", currentColor);
+      circle.text.style.color = currentColor;
+      return;
+    }
+  });
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
@@ -117,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     easing: "linear",
     strokeWidth: 9,
     text: {
-      value: "Ready to Study",
+      value: "Ready to Start",
     },
   });
 
