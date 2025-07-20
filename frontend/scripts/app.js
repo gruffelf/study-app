@@ -23,6 +23,7 @@ async function get(i, user) {
   try {
     const response = await fetch(url + `/${user}`);
     if (!response.ok) {
+      siteError();
       throw new Error(`Response status: ${response.status}`);
     }
 
@@ -31,6 +32,8 @@ async function get(i, user) {
     return data;
   } catch (e) {
     console.error(e);
+    siteError();
+    throw new Error();
   }
 }
 
@@ -59,4 +62,21 @@ async function post(i, data) {
 function logout() {
   sessionStorage.removeItem("user");
   window.location.href = "index.html";
+}
+
+function siteError() {
+  document.body.innerHTML = `
+    <!doctype html>
+    <html lang="en">
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Study App</title>
+        </head>
+        <body>
+            <h1>API Connection Error</h1>
+            <p>Please check with server administrator and try again later</p>
+        </body>
+    </html>
+    `;
 }
