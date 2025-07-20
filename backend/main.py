@@ -194,6 +194,16 @@ async def edit_task(request: Request):
                         i.pop("day")
 
             db.update({"tasks": tasks}, Query().user == data["user"])
+        elif data["feature"] == "all":
+            tasks = db.search(Query().user == data["user"])[0]["tasks"]
+
+            for i in tasks:
+                if i["id"] == data["id"]:
+                    i.update({"name": data["name"]})
+                    i.update({"description": data["description"]})
+                    i.update({"date": data["date"]})
+            db.update({"tasks": tasks}, Query().user == data["user"])
+
 
         return {"message": "Data received"}
     except json.JSONDecodeError:

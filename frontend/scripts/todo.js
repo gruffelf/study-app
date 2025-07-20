@@ -24,7 +24,17 @@ taskDateContainer = document.getElementById("due-date");
 
 currentSubject = "";
 
-function openTask(i) {
+function openTask(i, newTask, id = null) {
+  if (newTask) {
+    document
+      .getElementById("submit-button")
+      .setAttribute(onclick, "saveTask()");
+  } else {
+    document
+      .getElementById("submit-button")
+      .setAttribute("onclick", `saveEditTask("${id}")`);
+  }
+
   if (i == "study") {
     taskDate.valueAsDate = null;
     taskDateContainer.style.display = "none";
@@ -36,6 +46,8 @@ function openTask(i) {
   dim.style.display = "block";
   taskEntry.style.display = "flex";
   taskEntry.dataset.category = i;
+
+  console.log("done");
 }
 
 function closeTask() {
@@ -43,6 +55,7 @@ function closeTask() {
   taskEntry.style.display = "none";
   taskName.value = "";
   taskDescription.value = "";
+  taskDate.value = "";
 }
 
 function saveTask() {
@@ -79,17 +92,7 @@ function saveTask() {
     id: id,
   });
 
-  taskName.value = "";
-}
-
-function taskCheckbox(e) {
-  const task = e.target.closest(".task");
-
-  if (e.target.checked == true) {
-    task.style.backgroundColor = "lightgreen";
-  } else {
-    task.style.backgroundColor = "white";
-  }
+  closeTask();
 }
 
 function deleteTask(e) {
@@ -103,27 +106,75 @@ function addTask(name, category, description, date, id) {
   if (category == "study") {
     taskHTML = `
       <div class="task" data-name="${name}" data-category="${category}" data-id="${id}">
-        <input onclick="taskCheckbox(event)" class="task-checkbox" type="checkbox">
         <div class="task-data">
             <span class="task-name">${name}</span>
             <span class="task-description">${description}</span>
         </div>
+        <i class="fa fa-pencil" onclick="editTask(event)"></i>
         <i class="fa fa-trash" onclick="deleteTask(event)"></i>
       </div>`;
     studyList.innerHTML += taskHTML;
   } else {
     taskHTML = `
-      <div class="task" data-name="${name}" data-category="${category}" data-id="${id}">
-        <input onclick="taskCheckbox(event)" class="task-checkbox" type="checkbox">
+      <div class="task" data-date="${date.toISOString().split("T")[0]}" data-name="${name}" data-category="${category}" data-id="${id}">
         <div class="task-data">
             <span class="task-name">${name}</span>
             <span class="task-description">${description}</span>
             <span class="task-due-date">Due: ${date.toLocaleString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}</span>
         </div>
+        <i class="fa fa-pencil" onclick="editTask(event)"></i>
         <i class="fa fa-trash" onclick="deleteTask(event)"></i>
       </div>`;
     assessList.innerHTML += taskHTML;
   }
+}
+taskTemp = "";
+function editTask(e) {
+  taskTemp = e.target.closest(".task");
+  description = taskTemp.querySelector(".task-description").innerHTML;
+  openTask(taskTemp.dataset.category, false, taskTemp.dataset.id, taskTemp);
+  taskName.value = taskTemp.dataset.name;
+  taskDescription.value = description;
+  if (taskTemp.dataset.category == "assess") {
+    console.log(taskTemp.dataset.date);
+    taskDate.value = taskTemp.dataset.date;
+  }
+}
+
+function saveEditTask(id) {
+  if (taskTemp.dataset.category == "study") {
+    taskTemp.outerHTML = `
+      <div class="task" data-name="${taskName.value}" data-category="${taskTemp.dataset.category}" data-id="${id}">
+        <div class="task-data">
+            <span class="task-name">${taskName.value}</span>
+            <span class="task-description">${taskDescription.value}</span>
+        </div>
+        <i class="fa fa-pencil" onclick="editTask(event)"></i>
+        <i class="fa fa-trash" onclick="deleteTask(event)"></i>
+      </div>`;
+  } else {
+    taskTemp.outerHTML = `
+      <div class="task" data-date="${taskDate.valueAsDate.toISOString().split("T")[0]}" data-name="${taskName.value}" data-category="${taskTemp.dataset.category}" data-id="${id}">
+        <div class="task-data">
+            <span class="task-name">${taskName.value}</span>
+            <span class="task-description">${taskDescription.value}</span>
+            <span class="task-due-date">Due: ${taskDate.valueAsDate.toLocaleString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}</span>
+        </div>
+        <i class="fa fa-pencil" onclick="editTask(event)"></i>
+        <i class="fa fa-trash" onclick="deleteTask(event)"></i>
+      </div>`;
+  }
+
+  post("edittask", {
+    user: currentUser,
+    id: id,
+    feature: "all",
+    name: taskName.value,
+    description: taskDescription.value,
+    date: taskDate.value,
+  });
+
+  closeTask();
 }
 
 // Get request for currentUser's tasks from database, loops through each tasks and adds them

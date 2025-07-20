@@ -33,14 +33,14 @@
                 <div id="study-task-list">
 
                 </div>
-                <div class="task add-task" onclick="openTask('study')">+ Add Task</div>
+                <div class="task add-task" onclick="openTask('study', true)">+ Add Task</div>
             </div>
             <div class="assess-tasks">
                 <span class="task-title">Assessment Tasks</span>
                 <div id="assess-task-list">
 
                 </div>
-                <div class="task add-task" onclick="openTask('assess')">+ Add Task</div>
+                <div class="task add-task" onclick="openTask('assess', true)">+ Add Task</div>
             </div>
         </div>
 
@@ -57,7 +57,7 @@
                 Due Date
                 <input id="task-date" type="date"/>
             </div>
-            <button onclick="saveTask()">Enter</button>
+            <button id="submit-button" onclick="saveTask()">Enter</button>
         </div>
 
         <div id="subject-entry" class="overlay-menu">

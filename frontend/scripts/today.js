@@ -6,7 +6,8 @@ function addTask(name, category, description, date, subject, id, day) {
     taskHTML = `
       <div class="task" data-name="${name}" data-category="${category}" data-id="${id}" id="${id}">
         <div class="task-data">
-            <span class="task-name">${name}</span>
+        <span><input onclick="taskCheckbox(event)" class="task-checkbox" type="checkbox" style="margin-right: 0.5rem"><span class="task-name">${name}</span></span>
+            <span style="font-weight: normal; font-size: 0.9rem; font-style: italic">${description}</span>
             <span class="task-subject">From ${subject}</span>
         </div>
       </div>`;
@@ -14,13 +15,25 @@ function addTask(name, category, description, date, subject, id, day) {
   } else {
     taskHTML = `
       <div class="task" data-name="${name}" data-category="${category}" data-id="${id}" id="${id}">
+
         <div class="task-data">
-            <span class="task-name">Continue "${name}"</span>
+            <span><input onclick="taskCheckbox(event)" class="task-checkbox" type="checkbox" style="margin-right: 0.5rem"><span class="task-name">Continue "${name}"</span></span>
+            <span style="font-weight: normal; font-size: 0.9rem; font-style: italic">${description}</span>
             <span class="task-subject">From ${subject}</span>
             <span class="task-subject">Due in <span style="font-weight:bold">${Math.round((date - Date.now()) / 86400000)}</span> days</span>
         </div>
       </div>`;
     taskContainer.innerHTML += taskHTML;
+  }
+}
+
+function taskCheckbox(e) {
+  const task = e.target.closest(".task");
+
+  if (e.target.checked == true) {
+    task.style.backgroundColor = "lightgreen";
+  } else {
+    task.style.backgroundColor = "white";
   }
 }
 
