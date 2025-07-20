@@ -117,14 +117,10 @@ html {
 .login-page {
     width: 30%;
     background-color: lightgray;
-    position: fixed;
-    top: 25%;
-    left: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: start;
-    transform: translate(-50%, -50%);
     padding-top: 1rem;
     border-radius: 10px;
     box-shadow: 0px 0px 10px;
@@ -132,4 +128,39 @@ html {
 
 .login-page * {
     margin-bottom: 1rem;
+}
+
+.login-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: 3rem;
+    gap: 3rem;
+}
+
+.about-page {
+    width: 75%;
+    background-color: lightgray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px;
+}
+
+.bold-span {
+    font-weight: bold;
+}
+
+.about-page * {
+    margin: 0.3rem;
+}
+
+.about-page img {
+    width: 70%;
+    height: auto;
 }

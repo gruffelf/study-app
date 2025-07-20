@@ -16,24 +16,40 @@
             <img src="assets/logoipsum.png"></img>
         </div>
 
-        <div id="login-page" class="login-page">
-            <div class="popup-warning" id="login-warning"></div>
-            Username
-            <input
-                type="text"
-                id="username"
-                placeholder="Enter Username"
-                value=""
-            />
-            Password
-            <input
-                type="text"
-                id="password"
-                placeholder="Enter Password"
-                value=""
-            />
-            <button onclick="login()">Login</button>
-            <button onclick="createAccount()">Create Account</button>
+        <div class="login-container">
+            <div id="login-page" class="login-page">
+                <div class="popup-warning" id="login-warning"></div>
+                Username
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Enter Username"
+                    value=""
+                />
+                Password
+                <input
+                    type="text"
+                    id="password"
+                    placeholder="Enter Password"
+                    value=""
+                />
+                <button onclick="login()">Login</button>
+                <button onclick="createAccount()">Create Account</button>
+            </div>
+
+            <div class="about-page">
+                <h2>About Studyman</h2>
+                <h4>Study Page:</h4>
+                <img src="assets/study-example.png">
+                <p>On the study page, you can add tasks to <span class="bold-span">Studying Tasks</span> or <span class="bold-span">Assessment Tasks</span>. Studying tasks are tasks that you will repeat and have no due date, whereas assessment tasks have a due date. You can add, edit and delete tasks from this page.</p>
+                <h4>Calender Page:</h4>
+                <img src="assets/cal-example.png">
+                <p>On this page, you drag the tasks you have created on the study page into each day of the week. You can use this to plan out your week and what tasks you will work on. The website will remember what day you dragged them on and will stay there for upcoming weeks. Dragging tasks onto a day is used to represent days that you will work on them, not days that they are due</p>
+                <h4>Today Page:</h4>
+                <img src="assets/today-example.png">
+                <p>On this page, you will see the tasks you have assigned to the current day, and a pomodoro timer to organise time to work on those tasks. A pomodoro timer is a technique to split your time into 25 minute work intervals, seperated by a 5 minute break, and a 30 minute break every 4 intervals. This is used to increase productivity and get things done.</p>
+            </div>
+
         </div>
 
         <script src="scripts/app.js"></script>
