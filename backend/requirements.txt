@@ -1,2 +1,5 @@
 fastapi[standard]
 tinydb
+bcrypt==4.0.1
+passlib[bcrypt]
+python-jose[cryptography]

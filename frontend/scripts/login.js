@@ -34,7 +34,7 @@ function login() {
 
       if (data["status"] == true) {
         openLoginWarning("Logged in as " + userField.value, "green");
-        open(userField.value);
+        open(userField.value, data["access_token"]);
       } else {
         openLoginWarning("Invalid Credentials");
       }
@@ -59,15 +59,16 @@ function createAccount() {
           "Account " + userField.value + " created, logging you in",
           "green",
         );
-        open(userField.value);
+        open(userField.value, data["access_token"]);
       }
     },
   );
 }
 
-function open(user) {
+function open(user, token) {
+  currentToken = token;
   currentUser = user;
-  sessionStorage.setItem("user", userField.value);
+  sessionStorage.setItem("token", token);
   setTimeout(() => {
     window.location.href = "todo.html";
   }, "500");

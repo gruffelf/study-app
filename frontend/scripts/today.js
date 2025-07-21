@@ -38,23 +38,25 @@ function taskCheckbox(e) {
 }
 
 async function loadTasks() {
-  get("tasks", JSON.stringify([currentUser, "all", currentDay])).then(
-    (data) => {
-      data = JSON.parse(data);
+  get_header(
+    "tasks",
+    JSON.stringify([0, "all", currentDay]),
+    currentToken,
+  ).then((data) => {
+    data = JSON.parse(data);
 
-      data.forEach((value) => {
-        addTask(
-          value["name"],
-          value["category"],
-          value["description"],
-          new Date(value["date"]),
-          value["subject"],
-          value["id"],
-          value["day"],
-        );
-      });
-    },
-  );
+    data.forEach((value) => {
+      addTask(
+        value["name"],
+        value["category"],
+        value["description"],
+        new Date(value["date"]),
+        value["subject"],
+        value["id"],
+        value["day"],
+      );
+    });
+  });
 }
 
 timerInterval = null;

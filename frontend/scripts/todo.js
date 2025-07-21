@@ -1,9 +1,6 @@
 dim = document.getElementById("dim-overlay");
 taskEntry = document.getElementById("task-entry");
 
-subjectlist.innerHTML +=
-  "<p style='text-align: right; flex-grow: 5;'>Welcome " + currentUser + "</p>";
-
 subjectList = document.getElementById("subjectlist");
 subjectEntry = document.getElementById("subject-entry");
 subjectName = document.getElementById("subject-name");
@@ -23,6 +20,14 @@ taskDate = document.getElementById("task-date");
 taskDateContainer = document.getElementById("due-date");
 
 currentSubject = "";
+
+document.addEventListener("userReady", () => {
+  subjectlist.innerHTML +=
+    "<p style='text-align: right; flex-grow: 5;'>Welcome " +
+    currentUser +
+    "</p>";
+  subjectContainer = document.getElementById("subject-container");
+});
 
 function openTask(i, newTask, id = null) {
   if (newTask) {
@@ -59,7 +64,7 @@ function closeTask() {
 }
 
 function saveTask() {
-  if (currentUser == "") {
+  if (currentToken == "") {
     openTaskWarning("Please log in");
     return;
   }
@@ -83,7 +88,7 @@ function saveTask() {
   }
 
   post("addtask", {
-    user: currentUser,
+    user: currentToken,
     name: name,
     description: description,
     date: date,
@@ -166,7 +171,7 @@ function saveEditTask(id) {
   }
 
   post("edittask", {
-    user: currentUser,
+    user: currentToken,
     id: id,
     feature: "all",
     name: taskName.value,
@@ -177,25 +182,27 @@ function saveEditTask(id) {
   closeTask();
 }
 
-// Get request for currentUser's tasks from database, loops through each tasks and adds them
+// Get request for currentToken's tasks from database, loops through each tasks and adds them
 function loadTasks() {
   studyList.innerHTML = "";
   assessList.innerHTML = "";
   console.log(currentSubject);
-  get("tasks", JSON.stringify([currentUser, currentSubject])).then((data) => {
-    data = JSON.parse(data);
-    console.log(data);
+  get_header("tasks", JSON.stringify([0, currentSubject]), currentToken).then(
+    (data) => {
+      data = JSON.parse(data);
+      console.log(data);
 
-    data.forEach((value) => {
-      addTask(
-        value["name"],
-        value["category"],
-        value["description"],
-        new Date(value["date"]),
-        value["id"],
-      );
-    });
-  });
+      data.forEach((value) => {
+        addTask(
+          value["name"],
+          value["category"],
+          value["description"],
+          new Date(value["date"]),
+          value["id"],
+        );
+      });
+    },
+  );
 }
 
 function openTaskWarning(text) {
@@ -210,6 +217,7 @@ function clearTaskWarning() {
 
 function addSubject(name, first = false) {
   if (first && currentSubject == "") {
+    console.log("boosh", name, first, currentSubject);
     subjectContainer.innerHTML += `<span onclick="changeSubject(event)" class="subject-selected">${name}</span>`;
     currentSubject = name;
     subjectDisplay.innerHTML = currentSubject;
@@ -240,9 +248,9 @@ function changeSubject(e) {
 async function loadSubjects() {
   subjectContainer.innerHTML = "";
 
-  await get("subjects", currentUser).then((data) => {
+  await get_header("subjects", 0, currentToken).then((data) => {
     data = JSON.parse(data);
-
+    console.log(data);
     data.forEach((value) => {
       if (value == data[0]) {
         addSubject(value, true);
@@ -279,7 +287,7 @@ async function createSubject() {
   clearSubjectWarning();
 
   result = await post("addsubject", {
-    user: currentUser,
+    user: currentToken,
     subject: subjectName.value,
   });
 
@@ -294,7 +302,7 @@ async function createSubject() {
 
 async function deleteSubject() {
   result = await post("delsubject", {
-    user: currentUser,
+    user: currentToken,
     subject: currentSubject,
   });
 
@@ -309,7 +317,7 @@ async function deleteSubject() {
 document.addEventListener("DOMContentLoaded", async function () {
   await loadSubjects();
 
-  if (currentUser != "") {
+  if (currentToken != "") {
     console.log(currentSubject);
     loadTasks();
   }

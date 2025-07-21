@@ -3,8 +3,38 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from tinydb import TinyDB, Query
 import json
+from passlib.context import CryptContext
+from jose import JWTError, jwt
+from datetime import datetime, timedelta
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+
+secret_key = "my_secret_key"
+
+def create_token(data, expires: timedelta | None = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires or timedelta(days=7))
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, secret_key, algorithm="HS256")
+
+def decode_token(token):
+    return jwt.decode(token, secret_key, algorithms=["HS256"])
+
+def get_user(token):
+    payload = decode_token(token)
+    username = payload.get("sub")
+    if username is None:
+        raise
+    return username
 
 db = TinyDB('db/db.json')
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password):
+    return pwd_context.hash(password)
+
+def verify_password(password, hashed_password):
+    return pwd_context.verify(password, hashed_password)
 
 # SCHEMA
 #db.insert({'user': 'gruffelf', 'pass': 'secret', 'tasks': ["a","b"]})
@@ -21,15 +51,28 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
+@app.get("/verify-token/{data}")
+async def verify_token(data: str, request: Request):
+    try:
+        user = get_user(request.headers.get("token"))
+        return json.dumps({"status":"true","user":user})
+    except:
+        return json.dumps({"status":"false"})
+
+
+
 @app.get("/test")
 async def test():
     return {"message": "Hello World"}
 
 # Returns a specified users tasks from the database
 @app.get("/tasks/{data}")
-async def get_tasks(data: str):
+async def get_tasks(data: str, request: Request):
     data = json.loads(data)
-    user = data[0]
+    try:
+        user = get_user(request.headers.get("token"))
+    except:
+        return {"Auth Error"}
     subject = data[1]
 
     tasks = db.search(Query().user == user)[0]["tasks"]
@@ -61,8 +104,9 @@ async def login(creds: str):
         return json.dumps({"status": False})
     else:
         for i in validEntries:
-            if i["pass"] == creds[1]:
-                return  json.dumps({"status": True})
+            if verify_password(creds[1], i["pass"]):
+                token = create_token({"sub": creds[0]})
+                return  json.dumps({"status": True, "access_token":token,"token_type": "bearer"})
         return json.dumps({"status": False})
 
 @app.get("/createAccount/{creds}")
@@ -74,12 +118,18 @@ async def createAccount(creds: str):
     else:
         entry = schema
         entry['user'] = creds[0]
-        entry['pass'] = creds[1]
+        entry['pass'] = hash_password(creds[1])
         db.insert(entry)
-        return json.dumps({"status": True})
+        token = create_token({"sub": creds[0]})
+        return json.dumps({"status": True, "access_token":token,"token_type": "bearer"})
 
 @app.get("/subjects/{user}")
-async def get_subjects(user: str):
+async def get_subjects(user: str, request: Request):
+    try:
+        user = get_user(request.headers.get("token"))
+    except:
+        return {"Auth Error"}
+    print(json.dumps(db.search(Query().user == user)[0]["subjects"]))
     return json.dumps(db.search(Query().user == user)[0]["subjects"])
 
 @app.post("/addtask")
@@ -89,10 +139,15 @@ async def add_task(request: Request):
     try:
         data = json.loads(data)
 
-        oldTasks = db.search(Query().user == data["user"])[0]["tasks"]
+        try:
+            user = get_user(data["user"])
+        except:
+            return {"Auth Error"}
+
+        oldTasks = db.search(Query().user == user)[0]["tasks"]
         newTask = {"name": data["name"],"category": data["category"], "subject": data["subject"], "description": data["description"], "date": data["date"], "id": data["id"]}
 
-        db.update({"tasks": oldTasks + [newTask]}, Query().user == data["user"])
+        db.update({"tasks": oldTasks + [newTask]}, Query().user == user)
 
         return {"message": "Data received"}
     except json.JSONDecodeError:
@@ -105,14 +160,19 @@ async def del_task(request: Request):
     try:
         data = json.loads(data)
 
-        tasks = db.search(Query().user == data["user"])[0]["tasks"]
+        try:
+            user = get_user(data["user"])
+        except:
+            return {"Auth Error"}
+
+        tasks = db.search(Query().user == user)[0]["tasks"]
         print(data["id"])
         for i in tasks:
             if i["id"] == data["id"]:
 
                 tasks.remove(i);
 
-        db.update({"tasks": tasks}, Query().user == data["user"])
+        db.update({"tasks": tasks}, Query().user == user)
 
         return {"message": "Data received"}
     except json.JSONDecodeError:
@@ -124,9 +184,13 @@ async def add_subject(request: Request):
 
     try:
         data = json.loads(data)
-        user = data["user"]
-        subject = data["subject"]
 
+        try:
+            user = get_user(data["user"])
+        except:
+            return {"Auth Error"}
+
+        subject = data["subject"]
         subjects = db.search(Query().user == user)[0]["subjects"]
 
         if subject in subjects:
@@ -137,7 +201,7 @@ async def add_subject(request: Request):
 
         subjects.append(subject)
 
-        db.update({"subjects": subjects}, Query().user == data["user"])
+        db.update({"subjects": subjects}, Query().user == user)
 
         return {"message": "Data received"}
     except json.JSONDecodeError:
@@ -149,7 +213,10 @@ async def del_subject(request: Request):
 
     try:
         data = json.loads(data)
-        user = data["user"]
+        try:
+            user = get_user(data["user"])
+        except:
+            return {"Auth Error"}
         subject = data["subject"]
 
         subjects = db.search(Query().user == user)[0]["subjects"]
@@ -159,7 +226,7 @@ async def del_subject(request: Request):
 
         subjects.remove(subject)
 
-        db.update({"subjects": subjects}, Query().user == data["user"])
+        db.update({"subjects": subjects}, Query().user == user)
 
         tasks = db.search(Query().user == user)[0]["tasks"]
         delList = []
@@ -170,7 +237,7 @@ async def del_subject(request: Request):
 
         for i in delList : tasks.remove(i)
 
-        db.update({"tasks": tasks}, Query().user == data["user"])
+        db.update({"tasks": tasks}, Query().user == user)
 
         return {"message": "Data received"}
     except json.JSONDecodeError:
@@ -183,8 +250,13 @@ async def edit_task(request: Request):
     try:
         data = json.loads(data)
 
+        try:
+            user = get_user(data["user"])
+        except:
+            return {"Auth Error"}
+
         if data["feature"] == "day":
-            tasks = db.search(Query().user == data["user"])[0]["tasks"]
+            tasks = db.search(Query().user == user)[0]["tasks"]
 
             for i in tasks:
                 if i["id"] == data["id"]:
@@ -193,16 +265,16 @@ async def edit_task(request: Request):
                     else:
                         i.pop("day")
 
-            db.update({"tasks": tasks}, Query().user == data["user"])
+            db.update({"tasks": tasks}, Query().user == user)
         elif data["feature"] == "all":
-            tasks = db.search(Query().user == data["user"])[0]["tasks"]
+            tasks = db.search(Query().user == user)[0]["tasks"]
 
             for i in tasks:
                 if i["id"] == data["id"]:
                     i.update({"name": data["name"]})
                     i.update({"description": data["description"]})
                     i.update({"date": data["date"]})
-            db.update({"tasks": tasks}, Query().user == data["user"])
+            db.update({"tasks": tasks}, Query().user == user)
 
 
         return {"message": "Data received"}

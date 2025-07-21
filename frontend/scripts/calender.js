@@ -91,7 +91,7 @@ function onDrop(e) {
   day = e.currentTarget.dataset.day;
 
   post("edittask", {
-    user: currentUser,
+    user: currentToken,
     id: data,
     feature: "day",
     value: day,
@@ -111,7 +111,7 @@ function onReturnDrop(e) {
   e.target.appendChild(document.getElementById(data));
 
   post("edittask", {
-    user: currentUser,
+    user: currentToken,
     id: data,
     feature: "day",
     value: null,
@@ -153,9 +153,9 @@ function addTask(name, category, description, date, subject, id, day) {
   }
 }
 
-// Get request for currentUser's tasks from database, loops through each tasks and adds them
+// Get request for currentToken's tasks from database, loops through each tasks and adds them
 async function loadTasks() {
-  get("tasks", JSON.stringify([currentUser, "all"])).then((data) => {
+  get_header("tasks", JSON.stringify([0, "all"]), currentToken).then((data) => {
     data = JSON.parse(data);
 
     data.forEach((value) => {
