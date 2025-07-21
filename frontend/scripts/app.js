@@ -1,7 +1,7 @@
 // This is a master script that runs on all pages, giving API request functions and login checks
 
 const dev_url = "http://localhost:8000/"; //Local url
-const prod_url = "https://mdr-core.torpy.co/study/"; // Live public url
+const prod_url = "https://mdr-core.torpy.co/api/"; // Live public url
 const api_url = dev_url; // Select which url to use
 
 // Get references to html elements
