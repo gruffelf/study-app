@@ -1,3 +1,6 @@
+// This is a library I found online at https://kimmobrunfeldt.github.io/progressbar.js
+// I did not write this code
+
 // ProgressBar.js 1.1.1
 // https://kimmobrunfeldt.github.io/progressbar.js
 // License: MIT

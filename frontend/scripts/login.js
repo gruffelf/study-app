@@ -1,3 +1,6 @@
+// This script is used by index.html to deal with logging in and creating accounts
+
+// Gets references to html elements
 const userField = document.getElementById("username");
 const passField = document.getElementById("password");
 
@@ -22,12 +25,16 @@ function clearLoginWarning() {
   loginWarning.style.backgroundColor = "red";
 }
 
+// Function that takes the entry fields and makes API request to see whether they are a valid user and pass combo
+// Then calls open() function if successful, and creates error if not
 function login() {
+  // Error if any fields are left blank at all
   if (userField.value == "" || passField.value == "") {
     openLoginWarning("Invalid Credentials");
     return;
   }
 
+  // Sends user and pass, and recieve a validity status and a access token
   get("login", JSON.stringify([userField.value, passField.value])).then(
     (data) => {
       data = JSON.parse(data);
@@ -42,12 +49,15 @@ function login() {
   );
 }
 
+// Creates an account with user and pass input fields,
 function createAccount() {
+  // Error if any fields are left blank at all
   if (userField.value == "" || passField.value == "") {
     openLoginWarning("Invalid Credentials");
     return;
   }
 
+  // Sends data to endpoint, if valid logs you in with open() and gives status message
   get("createAccount", JSON.stringify([userField.value, passField.value])).then(
     (data) => {
       data = JSON.parse(data);
@@ -65,6 +75,8 @@ function createAccount() {
   );
 }
 
+// Called by login() and createAccount() once credentials are successful, and stores the access token to storage and redirects user to task page
+// As well as creating global variables for token and user
 function open(user, token) {
   currentToken = token;
   currentUser = user;

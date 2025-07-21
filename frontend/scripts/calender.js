@@ -1,7 +1,11 @@
+// This is a script the runs on the calender page, creating functionality for dragging tasks onto weekdays and updating the database with weekdays
+
+// Get references to html elements
 dayHeadings = document.getElementsByClassName("day-heading");
 weekContainer = document.getElementById("week-container");
 taskContainer = document.getElementById("task-container");
 
+// Runs whenever mouse scroll wheel is input, and moves the weekday container left and right or the document up and down
 weekContainer.addEventListener(
   "wheel",
   function (e) {
@@ -14,10 +18,14 @@ weekContainer.addEventListener(
   { passive: false },
 );
 
+// Initlise variables globally
 let mouseDown = false;
 let startX;
 let scrollLeft;
 
+// These functions are for click and drag to scroll the weekday container
+
+// When mouse is clicked on the weekday, initalise scroll with current position
 weekContainer.addEventListener(
   "mousedown",
   function (e) {
@@ -28,6 +36,7 @@ weekContainer.addEventListener(
   false,
 );
 
+// End scroll when left click is released
 weekContainer.addEventListener(
   "mouseup",
   function (e) {
@@ -36,6 +45,7 @@ weekContainer.addEventListener(
   false,
 );
 
+// Update scroll while mouse is moving and clicked down by how far mouse has moved
 weekContainer.addEventListener(
   "mousemove",
   function (e) {
@@ -51,22 +61,29 @@ weekContainer.addEventListener(
   false,
 );
 
+// Initalise variables to be used globally
 let scrolling = null;
 let currentPageX = null;
 
-function dragoverHandler(e) {
-  e.preventDefault();
+// These functions are for drag and drop functionality of tasks onto weekdays
 
-  currentPageX = e.pageX;
+// Run when dragging item over a weekday
+function dragoverHandler(e) {
+  e.preventDefault(); // Override default behaviour
+
+  currentPageX = e.pageX; // Store current mouse value to be referenced in the interval
 }
 
+// Run when picking up an item
 function dragstartHandler(e) {
-  e.dataTransfer.setData("text", e.target.id);
+  e.dataTransfer.setData("text", e.target.id); // Add id of task
 
+  // Stop the scrolling interval to be run
   if (scrolling) {
     return;
   }
 
+  // Repeatedly scroll page while dragging a task near the edges of the screen
   scrolling = setInterval(() => {
     if (currentPageX > window.innerWidth * 0.85) {
       weekContainer.scrollLeft += 30;
@@ -79,17 +96,20 @@ function dragstartHandler(e) {
 
 // When dropped into a weekday
 function onDrop(e) {
-  mouseDown = false;
+  mouseDown = false; // Stop scrolling
   if (scrolling) {
     clearInterval(scrolling);
     scrolling = null;
   }
 
   e.preventDefault();
+
+  // Get tasks reference that was dropped
   data = e.dataTransfer.getData("text");
   e.currentTarget.appendChild(document.getElementById(data));
   day = e.currentTarget.dataset.day;
 
+  // Update the tasks weekday value in database
   post("edittask", {
     user: currentToken,
     id: data,
@@ -98,18 +118,21 @@ function onDrop(e) {
   });
 }
 
-// When dropped back into task bank
+// When dropped back into task bank (different function than to weekday)
 function onReturnDrop(e) {
-  mouseDown = false;
+  mouseDown = false; // Stop scrolling
   if (scrolling) {
     clearInterval(scrolling);
     scrolling = null;
   }
 
   e.preventDefault();
+
+  // Get reference to task
   data = e.dataTransfer.getData("text");
   e.target.appendChild(document.getElementById(data));
 
+  // Remove weekday value from database
   post("edittask", {
     user: currentToken,
     id: data,
@@ -118,8 +141,11 @@ function onReturnDrop(e) {
   });
 }
 
+// Function to add task to html used by loadTasks()
 function addTask(name, category, description, date, subject, id, day) {
+  // If task is a study tasks
   if (category == "study") {
+    // Tasks display without due date
     taskHTML = `
       <div class="task" data-name="${name}" data-category="${category}" data-id="${id}" id="${id}" draggable="true" ondragstart="dragstartHandler(event)">
         <div class="task-data">
@@ -127,6 +153,8 @@ function addTask(name, category, description, date, subject, id, day) {
             <span class="task-subject">From ${subject}</span>
         </div>
       </div>`;
+
+    // If it has no weekday add it to task bank, otherwise add to corresponding week day
     if (day != undefined) {
       document
         .getElementById(`weekday-${day}`)
@@ -134,7 +162,10 @@ function addTask(name, category, description, date, subject, id, day) {
     } else {
       taskContainer.innerHTML += taskHTML;
     }
+
+    // Otherwise if it is an assessment task
   } else {
+    // Task display with due date
     taskHTML = `
       <div class="task" data-name="${name}" data-category="${category}" data-id="${id}" id="${id}" draggable="true" ondragstart="dragstartHandler(event)">
         <div class="task-data">
@@ -143,6 +174,8 @@ function addTask(name, category, description, date, subject, id, day) {
             <span class="task-subject">Due in <span style="font-weight:bold">${Math.round((date - Date.now()) / 86400000)}</span> days</span>
         </div>
       </div>`;
+
+    // If it has no weekday add it to task bank, otherwise add to corresponding week day
     if (day != undefined) {
       document
         .getElementById(`weekday-${day}`)
@@ -172,7 +205,9 @@ async function loadTasks() {
   });
 }
 
+// Runs when page is loaded
 document.addEventListener("DOMContentLoaded", async function () {
+  //Array so each weekday name is a assigned a number, weekday[0] = Sunday assigns sunday the number 0.
   const weekday = [
     "Sunday",
     "Monday",
@@ -183,9 +218,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     "Saturday",
   ];
 
+  // Loops through each weekday element and assigns it the corresponding weeday name, starting at today and going through each next day.
   for (let i = 0; i < dayHeadings.length; i++) {
     currentDay = new Date().getDay();
     console.log(currentDay + i);
+
+    // If currentday is less than max act like normal, but onces its over that subtract 7 so it loops back to start of the week
     if (currentDay + i <= 6) {
       dayHeadings[i].innerHTML = weekday[currentDay + i];
       dayHeadings[i].parentElement.dataset.day = currentDay + i;
@@ -197,5 +235,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
 
+  // Loads all tasks once page is loaded
   await loadTasks();
 });
