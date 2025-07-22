@@ -114,7 +114,7 @@ function saveTask() {
 // When delete button is pressed, gets task element and removes it from DOM and from database
 function deleteTask(e) {
   const task = e.target.closest(".task");
-  post("deltask", { user: "gruffelf", id: task.dataset.id });
+  post("deltask", { user: currentToken, id: task.dataset.id });
   task.remove();
 }
 
