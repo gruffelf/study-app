@@ -80,8 +80,8 @@ function closeTask() {
 // Called from add task button
 function saveTask() {
   // Get values from input fields
-  const name = taskName.value;
-  description = taskDescription.value;
+  const name = escapeHTML(taskName.value);
+  description = escapeHTML(taskDescription.value);
   let category;
   id = crypto.randomUUID(); // Generate unique id for each task
 
@@ -169,14 +169,16 @@ function editTask(e) {
 // Runs when save task is pressed in edit task dialogue
 // resets the tasks outerHTML with new values
 function saveEditTask(id) {
+  newName = escapeHTML(taskName.value);
+  description = escapeHTML(taskDescription.value);
   // Checks if tasks was study or assessment task
   if (taskTemp.dataset.category == "study") {
     // Tasks display without due date
     taskTemp.outerHTML = `
-      <div class="task" data-name="${taskName.value}" data-category="${taskTemp.dataset.category}" data-id="${id}">
+      <div class="task" data-name="${newName}" data-category="${taskTemp.dataset.category}" data-id="${id}">
         <div class="task-data">
-            <span class="task-name">${taskName.value}</span>
-            <span class="task-description">${taskDescription.value}</span>
+            <span class="task-name">${newName}</span>
+            <span class="task-description">${description}</span>
         </div>
         <i class="fa fa-pencil" onclick="editTask(event)"></i>
         <i class="fa fa-trash" onclick="deleteTask(event)"></i>
@@ -184,10 +186,10 @@ function saveEditTask(id) {
   } else {
     // Tasks display with due date and formatted date string
     taskTemp.outerHTML = `
-      <div class="task" data-date="${taskDate.valueAsDate.toISOString().split("T")[0]}" data-name="${taskName.value}" data-category="${taskTemp.dataset.category}" data-id="${id}">
+      <div class="task" data-date="${taskDate.valueAsDate.toISOString().split("T")[0]}" data-name="${newName}" data-category="${taskTemp.dataset.category}" data-id="${id}">
         <div class="task-data">
-            <span class="task-name">${taskName.value}</span>
-            <span class="task-description">${taskDescription.value}</span>
+            <span class="task-name">${newName}</span>
+            <span class="task-description">${description}</span>
             <span class="task-due-date">Due: ${taskDate.valueAsDate.toLocaleString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}</span>
         </div>
         <i class="fa fa-pencil" onclick="editTask(event)"></i>
@@ -200,8 +202,8 @@ function saveEditTask(id) {
     user: currentToken,
     id: id,
     feature: "all",
-    name: taskName.value,
-    description: taskDescription.value,
+    name: newName,
+    description: description,
     date: taskDate.value,
   });
 
@@ -325,16 +327,22 @@ function clearSubjectWarning() {
 // If response is bad it creates error message, if not it adds it to the database and DOM and changes subejct to it
 async function createSubject() {
   clearSubjectWarning();
+  if (containsEscapable(subjectName.value)) {
+    openSubjectWarning(`Cannot contain characters &, <, >, ", ' or /`);
+    return;
+  }
+
+  newName = escapeHTML(subjectName.value);
 
   result = await post("addsubject", {
     user: currentToken,
-    subject: subjectName.value,
+    subject: newName,
   });
 
   if (result["error"] != null) {
     openSubjectWarning(result["error"]);
   } else {
-    addSubject(subjectName.value);
+    addSubject(newName);
     closeSubject();
     changeSubject({ target: subjectContainer.lastChild });
   }

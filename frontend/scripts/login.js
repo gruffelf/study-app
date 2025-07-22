@@ -34,6 +34,14 @@ function login() {
     return;
   }
 
+  if (
+    containsEscapable(userField.value) ||
+    containsEscapable(passField.value)
+  ) {
+    openLoginWarning(`Invalid Characters Used (&, <, >, ", ' or /)`, "red");
+    return;
+  }
+
   // Sends user and pass, and recieve a validity status and a access token
   get("login", JSON.stringify([userField.value, passField.value])).then(
     (data) => {
