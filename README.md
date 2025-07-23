@@ -1,13 +1,22 @@
 # study-app
 Finally a project managment tool for high school students, to keep you focused and on track.
 
-## How to view
+## How to view (im self hosting)
 Visit page here [mdr-core.torpy.co/study](https://mdr-core.torpy.co/study)
 
-## How to run
+## How to run (simple)
+If you can't use my website, run the website yourself.
+1. ```git clone https://github.com/gruffelf/study-app.git```
+2. ```cd study-app```
+3. ```pip install -r backend/requirements.txt```
+4. ```fastapi dev backend/main.py```
+5. Open frontend/index.html in a web browser and all functionality should be available
+If this doesn't work check what port fastapi is running on and update the API_URL variable at the start of frontend/scripts/app.js to localhost:(whatever port fastapi is running on)
+
+## How to run (advanced)
 ### Web Server
 HTML, CSS, JS, and asset files, running on web server.
-Make sure to set API_URL in app.js to whatever the API server is running on.
+**Make sure to set API_URL variable in app.js to whatever the API server is running on.**
 
 ### API Server
 main.py, running with a python virtual environment through FastAPI cli, and requirements.txt downloaded with pip.
