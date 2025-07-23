@@ -65,6 +65,14 @@ function createAccount() {
     return;
   }
 
+  if (
+    containsEscapable(userField.value) ||
+    containsEscapable(passField.value)
+  ) {
+    openLoginWarning(`Invalid Characters Used (&, <, >, ", ' or /)`, "red");
+    return;
+  }
+
   // Sends data to endpoint, if valid logs you in with open() and gives status message
   get("createAccount", JSON.stringify([userField.value, passField.value])).then(
     (data) => {
