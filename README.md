@@ -3,6 +3,7 @@ Finally a project managment tool for high school students, to keep you focused a
 
 ## How to view (im self hosting)
 Visit page here [mdr-core.torpy.co/study](https://mdr-core.torpy.co/study)
+
 Or alternatively [torpy.co/study](https://torpy.co/study)
 
 ## How to run (simple)
